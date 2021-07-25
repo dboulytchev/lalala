@@ -1,5 +1,7 @@
 # lalala
 
+![QR Code](https://github.com/dboulytchev/lalala/blob/main/qr.png)
+
 Installation Prerequisites:
 
 * OCaml (>= 4.10.1) [https://ocaml.org/]

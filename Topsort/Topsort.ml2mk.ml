@@ -22,18 +22,48 @@ type numbering = nat list
    less x y = true <=> x < y
 *)                
 let rec less x y =
+  match y with
+  | S y' -> (match x with
+             | O    -> true
+             | S x' -> less x' y'
+            )
+  | O -> false
+
+let max x y =
+  if less x y then y else x
+
+let numberOfnodes g =
+  let rec inner acc = function 
+  | []           -> acc
+  | (x, y) :: tl -> inner (max acc (max x y)) tl
+  in
+  inner O g
   
 (* numbering -> nat -> nat
 
    Looks up an i-th element in a numbering
 *)
-let rec lookup (h :: tl) k = 
+let rec lookup (h :: tl) = function
+| O   -> h
+| S k -> lookup tl k
 
 (* graph -> numbering -> bool
 
    Tests if given numbering for a given graph is a topologial sorting 
 *)       
-let rec eval graph numbering = 
+let eval graph numbering =
+  let n = S (numberOfnodes graph) in
+  let rec eval graph numbering =
+    match graph with
+    | []               -> true
+    | (b, e) :: graph' -> let nb = lookup numbering b in
+                          let ne = lookup numbering e in
+                          less nb ne &&
+                          less ne n &&
+                          eval graph' numbering  
+  in
+  eval graph numbering
+                      
 
                               
                             

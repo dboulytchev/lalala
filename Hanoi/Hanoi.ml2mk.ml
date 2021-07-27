@@ -30,38 +30,78 @@ type set  = (nat list, nat list, nat list)
    
    less x y = true <=> x < y
 *)                 
-let rec less x y = 
+let rec less x y =
+  match y with
+  | S y' -> match x with
+           | O    -> true
+           | S x' -> less x' y'
 
 (* move -> pin
 
    Gets the name of the complementary pin for a given move 
    (e.g. (A, B) -> C, etc.)
 *)                   
-let complement move = 
+let complement = function 
+| (A, B) -> C
+| (B, A) -> C
+| (A, C) -> B
+| (C, A) -> B
+| (B, C) -> A
+| (C, B) -> A
 
 (* set -> pin -> nat list
    
    Selects the contents of given pin by its name
  *)          
-let select (x, y, z) pin =
-                          
+let select (x, y, z) = function
+| A -> x
+| B -> y
+| C -> z
+
 (* move -> set -> set
 
    Makes a pseudo-set for given set and move:
 
    (from, to) -> set -> (set.from, set.to, set.complement)   
 *)     
-let selectMove move s = 
-                      
+let selectMove move s =
+  match move with
+  | (x, y) -> (select s x, select s y, select s (complement move))
+
 (* set -> move -> set
 
    Permutes a pseudo set for a given move to get a "normal" set
  *)           
-let permutate (x, y, z) move = 
+let permutate (x, y, z) = function
+| (A, B) -> (x, y, z)
+| (B, A) -> (y, x, z)
+| (A, C) -> (x, z, y)
+| (C, A) -> (y, z, x)
+| (B, C) -> (z, x, y)
+| (C, B) -> (z, y, x)
 
 (* move list -> set -> set
 
   Executes a given sequence of moves for given initial set and
   produces a final set (if possible) 
 *)
-let rec eval p s = 
+let[@tabled] rec eval p s =
+  match p with
+  | []         -> s
+  | move :: p' ->
+    match move with
+    | (x, y) ->
+      eval p' (
+        if x = y
+          then s
+          else
+            match selectMove move s with
+            | (onA, onB, onC) ->
+              permutate (match onA with
+                         | topA :: restA -> match onB with
+                                            | []                           -> (restA, [topA], onC)
+                                            | topB :: _  when topB >= topA ->
+                                                match less topA topB with
+                                                | true -> (restA, topA :: onB, onC)
+                        ) move
+      ) 

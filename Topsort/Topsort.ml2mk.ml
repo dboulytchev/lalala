@@ -1,7 +1,8 @@
 (* Naural numbers in Peano encoding *)
 type nat = O | S of nat
 
-(*
+(* Make these type declarations compile:
+
 type graph     = (nat * nat) list
 type numbering = nat list 
 *)

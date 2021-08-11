@@ -5,6 +5,8 @@ type nat = O | S of nat
 type pin = A | B | C
 
 (*
+Make these type definitions compile
+
 type move = (pin, pin)
 type set  = (nat list, nat list, nat list) 
 *)
@@ -64,16 +66,15 @@ let select (x, y, z) = function
 
    (from, to) -> set -> (set.from, set.to, set.complement)   
 *)     
-let selectMove move s =
-  match move with
-  | (x, y) -> (select s x, select s y, select s (complement move))
+let selectMove (x, y) as move s =
+  (select s x, select s y, select s (complement move))
 
 (* set -> move -> set
 
    Permutes a pseudo set for a given move to get a "normal" set
  *)           
-let permutate (x, y, z) = function
-| (A, B) -> (x, y, z)
+let permutate (x, y, z) as state = function
+| (A, B) -> state
 | (B, A) -> (y, x, z)
 | (A, C) -> (x, z, y)
 | (C, A) -> (y, z, x)
@@ -88,20 +89,16 @@ let permutate (x, y, z) = function
 let[@tabled] rec eval p s =
   match p with
   | []         -> s
-  | move :: p' ->
-    match move with
-    | (x, y) ->
-      eval p' (
-        if x = y
-          then s
-          else
-            match selectMove move s with
-            | (onA, onB, onC) ->
-              permutate (match onA with
-                         | topA :: restA -> match onB with
-                                            | []                           -> (restA, [topA], onC)
-                                            | topB :: _  when topB >= topA ->
-                                                match less topA topB with
-                                                | true -> (restA, topA :: onB, onC)
-                        ) move
-      ) 
+  | (x, y) as move :: p' ->
+     eval p' 
+       (if x = y
+         then s
+         else
+           let (topA :: restA as onA, onB, onC) = selectMove move s in
+           permutate (match onB with
+                      | []                           -> (restA, [topA], onC)
+                      | topB :: _  when topB >= topA ->
+                         match less topA topB with
+                         | true -> (restA, topA :: onB, onC)
+                     ) move)
+     

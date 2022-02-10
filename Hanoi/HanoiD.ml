@@ -1,10 +1,5 @@
-module L = List
-
-open GT
-
 open OCanren
 open OCanren.Std
-
 open Hanoi
 
 (*************************************************)
@@ -22,9 +17,13 @@ let gen_pin n =
 let start n  = pair (gen_pin n) (pair (nil ()) (nil ()))
 let finish n = pair (nil ()) (pair (nil ()) (gen_pin n))
 
-let _ =
+let projector : (_, (pin * pin) Std.List.ground) Reifier.t =
+  Std.List.prj_exn (Std.Pair.prj_exn prj_exn prj_exn)
+let project rr = rr#reify projector
+
+let () =
   Printf.printf "%s\n" @@
-  show(answer) @@
-  L.hd @@
+  GT.show(answer) @@
+  Stdlib.List.hd @@
   Stream.take ~n:1 @@
-  run q (fun q -> eval ((===) q) ((===) (start 7)) (finish 7)) project
+  run q (fun q -> eval_o ((===) q) ((===) (start 7)) (finish 7)) (fun rr -> rr#reify projector)

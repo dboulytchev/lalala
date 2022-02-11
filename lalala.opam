@@ -1,0 +1,19 @@
+opam-version: "2.0"
+version: "0.1.0"
+synopsis: "The lalala"
+
+authors: [ "https://github.com/dboulytchev" ]
+maintainer: [ "https://github.com/dboulytchev" ]
+
+homepage: "https://github.com/dboulytchev/lalala"
+bug-reports: "https://github.com/dboulytchev/lalala/issues"
+depends: [
+  "camlp5"
+  "GT" {>= "0.5"}
+  "OCanren" {>= "0.3.0~"}
+  "OCanren-ppx" {>= "0.3.0~"}
+  "noCanren" {>= "0.3.0~"}
+]
+build: [
+  [make]
+]

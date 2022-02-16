@@ -39,16 +39,16 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           dune-cache: true
-          opam-depext: false
-          opam-pin: false
+          #opam-depext: false
+          #opam-pin: false
 
-      - run: opam pin add GT          --no-action https://github.com/Kakadu/GT.git
-      - run: opam pin add OCanren     --no-action https://github.com/Kakadu/OCanren.git#eucpp-final
-      - run: opam pin add OCanren-ppx --no-action https://github.com/Kakadu/OCanren.git#eucpp-final
-      - run: opam pin add noCanren    --no-action https://github.com/Kakadu/noCanren.git#dune-4.13-eucpp
+      #- run: opam pin add GT          --no-action https://github.com/Kakadu/GT.git
+      #- run: opam pin add OCanren     --no-action https://github.com/Kakadu/OCanren.git#eucpp-final
+      #- run: opam pin add OCanren-ppx --no-action https://github.com/Kakadu/OCanren.git#eucpp-final
+      #- run: opam pin add noCanren    --no-action https://github.com/Kakadu/noCanren.git#dune-4.13-eucpp
 
-      - run: opam pin add lalala.dev . --no-action
-      - run: opam depext lalala.dev --yes
+      #- run: opam pin add lalala.dev . --no-action
+      #- run: opam depext lalala.dev --yes
 
       - run: opam install lalala.dev --deps-only --with-test
       - run: opam install lalala.dev

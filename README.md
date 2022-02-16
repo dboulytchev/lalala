@@ -4,7 +4,7 @@
 
 Installation Prerequisites:
 
-* OCaml (>= 4.10.1) [https://ocaml.org/]
-* opam [https://opam.ocaml.org/]
-* OCanren [https://github.com/JetBrains-Research/OCanren]
-* noCanren [https://github.com/Lozov-Petr/noCanren]
+* [OCaml](https://ocaml.org) >= 4.13
+* [opam](https://opam.ocaml.org/)
+* [OCanren](https://github.com/JetBrains-Research/OCanren) >= 0.3.0~ (installable with opam)
+* [noCanren](https://github.com/Lozov-Petr/noCanren) >= 0.3.0~ (installable with opam)

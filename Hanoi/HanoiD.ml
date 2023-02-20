@@ -1,13 +1,13 @@
 open OCanren
 open OCanren.Std
 open Hanoi
+open Hanoi.HO
 
 (*************************************************)
 
-@type pin    = Hanoi.gpin = A | B | C with show
 @type answer = (pin, pin) Pair.ground List.ground with show
 
-let rec toN n = if n = 0 then o () else s (toN (n - 1))
+let rec toN n = if n = 0 then !!O else !!(S (toN (n - 1)))
 
 let gen_pin n =
   let rec gen_pin m =
@@ -26,4 +26,4 @@ let () =
   GT.show(answer) @@
   Stdlib.List.hd @@
   Stream.take ~n:1 @@
-  run q (fun q -> eval_o ((===) q) ((===) (start 7)) (finish 7)) (fun rr -> rr#reify projector)
+  run q (fun q -> FO.eval q (start 7) (finish 7)) (fun rr -> rr#reify projector)

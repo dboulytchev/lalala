@@ -54,27 +54,21 @@ open HO
 
 (*************************************************)
 
-type set = Nat.ground * Nat.ground * Nat.ground * Nat.ground
-[@@deriving gt ~options:{ show }]
+@type set = Nat.ground * Nat.ground * Nat.ground * Nat.ground with show
 
-type lset = Nat.logic * Nat.logic * Nat.logic * Nat.logic
-[@@deriving gt ~options:{ show }]
+@type lset = Nat.logic * Nat.logic * Nat.logic * Nat.logic with  show
 
-type answer = move OCanren.Std.List.ground [@@deriving gt ~options:{ show }]
-
-let set a b c d = pair a @@ pair b @@ pair c d
+@type answer = move OCanren.Std.List.ground with show
 
 let _ =
+  Printf.printf "Test!\n";
   Printf.printf "%s\n"
   @@ show answer
   @@ Stdlib.List.hd
   @@ Stream.take ~n:1
-  @@ run
-       q
-       (fun q ->
-         fresh
-           (a b c d)
-           (c === nat 1 ||| (d === nat 1))
-           (FO.eval (set (nat 5) (nat 3) (nat 0) (nat 0)) q (set a b c d)))
-       (fun rr -> rr#reify (Std.List.prj_exn prj_exn))
-;;]
+  @@ run q (fun q -> ocanren {
+         fresh a, b, c, d in
+           FO.eval (5, 3, 0, 0) q (a, b, c, d) &
+           {a == 1 | d == 1}
+         }) (fun rr -> rr#reify (Std.List.prj_exn prj_exn))
+]

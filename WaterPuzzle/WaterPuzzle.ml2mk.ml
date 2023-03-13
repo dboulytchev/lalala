@@ -51,24 +51,22 @@ open GT
 open OCanren
 open OCanren.Std
 open HO
-
-(*************************************************)
-
-@type set = Nat.ground * Nat.ground * Nat.ground * Nat.ground with show
-
-@type lset = Nat.logic * Nat.logic * Nat.logic * Nat.logic with  show
-
-@type answer = move OCanren.Std.List.ground with show
-
-let _ =
+     
+ocanren type answer = move list 
+                    
+let _ = 
   Printf.printf "Test!\n";
   Printf.printf "%s\n"
-  @@ show answer
+  @@ show (answer) 
   @@ Stdlib.List.hd
   @@ Stream.take ~n:1
   @@ run q (fun q -> ocanren {
          fresh a, b, c, d in
            FO.eval (5, 3, 0, 0) q (a, b, c, d) &
            {a == 1 | d == 1}
-         }) (fun rr -> rr#reify (Std.List.prj_exn prj_exn))
+         }) (fun rr -> rr#reify prj_exn_answer)
 ]
+          
+
+
+      

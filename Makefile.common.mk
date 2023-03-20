@@ -58,7 +58,7 @@ include $(wildcard $(DEPFILES))
 include $(DEPFILES)
 
 # generic rules
-%.ml: %.ml2mk.ml
+%.ml: %.ml2mk.ml $(REWRITER_EXES)
 	$(NOCANREN) $(NOCFLAGS) -o $@ $<
 
 %.cmi: %.mli $(REWRITER_EXES)  $(DEPDIR)/%.mli.d | $(DEPDIR)

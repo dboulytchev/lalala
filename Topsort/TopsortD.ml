@@ -1,28 +1,16 @@
 open OCanren
 open OCanren.Std
 open Topsort
+open Topsort.HO
 
-module For_gnat = struct
-  [%%distrib
-    type nonrec 'a0 t = 'a0 Topsort.gnat =
-    | O
-    | S of 'a0
-    [@@deriving gt ~options:{show; gmap}]
-    type ground = ground t]
-end
-
-@type 'a gnat    = 'a Topsort.gnat = O | S of 'a with show, gmap
-@type lnat       = lnat gnat logic               with show, gmap
-@type lnumbering = lnat Std.List.logic           with show, gmap
+@type lnumbering = nat_logic Std.List.logic      with show, gmap
 @type graph      = (GT.int * GT.int) GT.list     with show
 
-let rec to_nat n = if n = 0 then o () else s @@ to_nat @@ n - 1
+let rec to_nat n = if n = 0 then !!O else !!(S (to_nat @@ n - 1))
 
 let rec to_graph = function
   []           -> nil ()
 | (b, e) :: tl -> pair (to_nat b) (to_nat e) % to_graph tl
-
-let reify_nat eta = For_gnat.reify eta
 
 let () = Random.self_init ()
 
@@ -66,7 +54,7 @@ let to_dot n g =
   let add = Buffer.add_string b in
   add "digraph X {\n";
   Stdlib.List.iter (fun (x, y) ->
-    add @@ Printf.sprintf "  %s -> %s\n" (GT.show(lnat) @@ Stdlib.List.nth n x) (GT.show(lnat) @@ Stdlib.List.nth n y)
+    add @@ Printf.sprintf "  %s -> %s\n" (GT.show(nat_logic) @@ Stdlib.List.nth n x) (GT.show(nat_logic) @@ Stdlib.List.nth n y)
   ) g;
   add "}\n";
   Buffer.contents b
@@ -78,8 +66,8 @@ let topsort g =
   Stdlib.List.hd @@
   Stream.take ~n:1 @@
   run q
-      (fun q -> eval_o ((===) (to_graph g)) ((===) q) (!!true))
-      (fun a -> a#reify (Std.List.reify reify_nat))
+      (fun q -> FO.eval (to_graph g) q !!true)
+      (fun a -> a#reify (Std.List.reify nat_reify))
 
 let _ =
   Stdlib.List.iter topsort
